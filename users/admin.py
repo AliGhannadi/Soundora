@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User
-
+from .models import User, Producer
+from app.models import Music
 
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
@@ -9,10 +9,13 @@ class CustomUserAdmin(UserAdmin):
     list_display = ("email", "first_name", "last_name", "username", "is_superuser", "is_active", "is_verified")
     list_filter = ("email", "username", "is_superuser", "is_active")
     search_fields = ("email", "username", "is_superuser", "is_active")
-    ordering = ("email",)
+    ordering = ("pk",)
+    actions = ["deactivate_user"]
+    def deactivate_user(self, request, queryset):
+        queryset.update(is_active=False)
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
-        # ('Personal Info', {'fields': ('first_name', 'last_name')}),
+        (None, {"fields": ("email", "password", "username")}),
+        ('Personal Info', {'fields': ('first_name', 'last_name')}),
         (
             "Permissions",
             {
@@ -49,5 +52,19 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
+class MusicInline(admin.TabularInline):
+    model = Music
+    extra = 0
+    
+class ProducerAdmin(admin.ModelAdmin):
+    list_display = ["user", "category", "played_time", "website", "location", "is_suspended", "rating"]
+    list_filter = ["user", "category", "is_suspended", "location"]
+    search_fields = ["user__username", "category", "pk"]
+    ordering = ("pk",)
+    inlines = [MusicInline]
+    actions = ["suspend_producer"]
+    def suspend_producer(self, request, queryset):
+        queryset.update(is_suspended=True)
 
+admin.site.register(Producer, ProducerAdmin)
 admin.site.register(User, CustomUserAdmin)

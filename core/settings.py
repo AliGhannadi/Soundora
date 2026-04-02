@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'app'
+    "users",
+    'app',
+    "rest_framework",
+    "rest_framework.authtoken",
+    "django_filters",
+    "drf_yasg",
+    "rest_framework_simplejwt",
+    "mail_templated",
+    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -75,9 +82,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "soundora",
+        "USER": "alidb",
+        "PASSWORD": "ali72387238",
+        "HOST": "postgres_db",
+        "PORT": "5432",
     }
 }
 

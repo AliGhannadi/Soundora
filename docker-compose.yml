@@ -20,6 +20,30 @@ services:
       - smtp4dev-data:/smtp4dev
     environment:
       - ServerOptions__HostName=smtp4dev
+  postgres_db:
+    image: postgres:16
+    container_name: soundora_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: alidb
+      POSTGRES_PASSWORD: ali72387238
+      POSTGRES_DB: soundora
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresqldata
+  pgadmin_gui:
+    image: dpage/pgadmin4
+    container_name: local_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres_db
 
 volumes:
+  pg_data:
   smtp4dev-data:
