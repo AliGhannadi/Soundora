@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import Producer
+from django.urls import reverse
+
 # Create your models here.
 class Category(models.Model):
     name=models.CharField(max_length=100)
@@ -24,3 +26,6 @@ class Music(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=True)
     file = models.FileField(upload_to="musics/")
+    def get_absolute_api_url(self):
+        return reverse("app:api-v1:music-get", kwargs={"pk": self.id})
+    

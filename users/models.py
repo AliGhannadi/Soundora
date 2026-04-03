@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_countries.fields import CountryField
+
 # Create your models here.
 
 class UserManager(BaseUserManager):
@@ -49,7 +50,11 @@ class Producer(models.Model):
         on_delete=models.CASCADE,
         related_name="producer"
     )
-    category = models.CharField(max_length=60)
+    category = models.ForeignKey(
+        "app.Category",
+        on_delete=models.CASCADE,
+        related_name="producer"
+    )
     played_time = models.PositiveIntegerField(default=0)
     website = models.URLField(blank=True, null=True)
     location = CountryField()
