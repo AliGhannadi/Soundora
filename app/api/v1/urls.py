@@ -1,13 +1,10 @@
 from django.urls import path
 from . import views
-
+from rest_framework.routers import DefaultRouter
 # from rest_framework.authtoken.views import obtain_auth_token
 app_name = "api-v1"
 
-urlpatterns = [
-    path(
-        "music/",
-        views.MusicListView.as_view(),
-        name="music-list"),
-    path("music/<int:pk>/", views.MusicRetreiveView.as_view(), name="music-get")
-]
+router = DefaultRouter()
+router.register(r'music', views.MusicViewSet, basename="music")
+
+urlpatterns = router.urls

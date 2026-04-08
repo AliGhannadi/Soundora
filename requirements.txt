@@ -37,3 +37,4 @@ faker
 django-cors-headers
 djoser
 django-countries
+pillow

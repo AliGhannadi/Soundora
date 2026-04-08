@@ -27,5 +27,5 @@ class Music(models.Model):
     is_published = models.BooleanField(default=True)
     file = models.FileField(upload_to="musics/")
     def get_absolute_api_url(self):
-        return reverse("app:api-v1:music-get", kwargs={"pk": self.id})
+        return reverse("app:api-v1:music-detail", kwargs={"pk": self.id})
     
