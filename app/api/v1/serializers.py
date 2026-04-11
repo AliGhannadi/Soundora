@@ -32,7 +32,7 @@ class MusicListSerializer(serializers.ModelSerializer):
     absolute_url = serializers.SerializerMethodField()
     class Meta:
         model = Music
-        fields = ["name", "category", "producer",  "cover_image", "file", "absolute_url"]
+        fields = ["title", "category", "producer",  "cover_image", "file", "absolute_url"]
     def get_absolute_url(self, obj):
         request = self.context.get("request")
         relative_url = obj.get_absolute_api_url()
@@ -44,4 +44,4 @@ class MusicDetailSerializer(serializers.ModelSerializer):
     producer = ProducerSerializer(read_only=True)
     class Meta:
         model = Music
-        fields = ["name", "category", "producer", "lyrics", "cover_image", "created_date", "file"]
+        fields = ["title", "category", "producer", "lyrics", "cover_image", "uploaded_at", "file"]

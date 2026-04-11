@@ -3,8 +3,8 @@ from .models import Music , Category
 
 @admin.register(Music)
 class MusicAdmin(admin.ModelAdmin):
-    list_display = ["name", "category", "producer", "cover_image", "created_date"]
-    list_filter = ["name", "category", "producer"]
+    list_display = ["title", "category", "producer", "cover_image", "uploaded_at"]
+    list_filter = ["title", "category", "producer"]
     ordeirng = ("pk")
     
 

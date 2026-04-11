@@ -9,7 +9,7 @@ class Category(models.Model):
         return self.name
     
 class Music(models.Model):
-    name = models.CharField()
+    title = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -23,9 +23,10 @@ class Music(models.Model):
     )
     cover_image = models.ImageField(upload_to="cover-images/")
     lyrics = models.TextField(null=True, blank=True)
-    created_date = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=True)
     file = models.FileField(upload_to="musics/")
     def get_absolute_api_url(self):
         return reverse("app:api-v1:music-detail", kwargs={"pk": self.id})
-    
+    def __str__(self):
+        return self.title or "Unknown Track"
