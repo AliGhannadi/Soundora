@@ -6,8 +6,8 @@ class MusicFilter(django_filters.FilterSet):
         field_name="name",
         lookup_expr="icontains"
     )
-    producer_name = django_filters.CharFilter(
-        field_name="producer__user__username",
+    artist_name = django_filters.CharFilter(
+        field_name="artist__user__username",
         lookup_expr="icontains"
     )
     lyrics = django_filters.CharFilter(
@@ -25,10 +25,10 @@ class MusicFilter(django_filters.FilterSet):
     )
     class Meta:
         model = Music
-        fields = ["name", "producer_name"]
+        fields = ["name", "artist_name"]
         fields = {
             "is_published": ["exact"],
             "category": ["exact"],
-            "producer": ["in", "exact"],
+            "artist": ["in", "exact"],
             
         }

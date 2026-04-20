@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Producer
+from .models import User, Artist
 from app.models import Music
-
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
     model = User
@@ -53,8 +52,8 @@ class CustomUserAdmin(UserAdmin):
     )
 
 class MusicInline(admin.TabularInline):
-    model = Music
-    extra = 0
+    model = Music.artist.through
+    extra = 1
     
 class ProducerAdmin(admin.ModelAdmin):
     list_display = ["user", "category", "played_time", "website", "location", "is_suspended", "rating"]
@@ -66,5 +65,5 @@ class ProducerAdmin(admin.ModelAdmin):
     def suspend_producer(self, request, queryset):
         queryset.update(is_suspended=True)
 
-admin.site.register(Producer, ProducerAdmin)
+admin.site.register(Artist, ProducerAdmin)
 admin.site.register(User, CustomUserAdmin)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from app.models import Music
-from users.models import User, Producer
+from users.models import User, Artist
 from app.models import Category
 # added absolute_url 
 
@@ -14,25 +14,25 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ["id", "name"]
 
-class ProducerSerializer(serializers.ModelSerializer):
+class ArtistSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     category = serializers.SlugRelatedField(
             read_only=True,
             slug_field="name"
         )
     class Meta:
-        model = Producer
+        model = Artist
         fields = ["category", "played_time", "website", "rating", "user"]
         
     
 
 class MusicListSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    producer = ProducerSerializer(read_only=True)
+    artist = ArtistSerializer(read_only=True)
     absolute_url = serializers.SerializerMethodField()
     class Meta:
         model = Music
-        fields = ["title", "category", "producer",  "cover_image", "file", "absolute_url"]
+        fields = ["title", "category", "artist",  "cover_image", "file", "absolute_url"]
     def get_absolute_url(self, obj):
         request = self.context.get("request")
         relative_url = obj.get_absolute_api_url()
@@ -41,7 +41,7 @@ class MusicListSerializer(serializers.ModelSerializer):
 
 class MusicDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    producer = ProducerSerializer(read_only=True)
+    artist = ArtistSerializer(read_only=True)
     class Meta:
         model = Music
-        fields = ["title", "category", "producer", "lyrics", "cover_image", "uploaded_at", "file"]
+        fields = ["title", "category", "artist", "lyrics", "cover_image", "uploaded_at", "file"]

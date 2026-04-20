@@ -29,11 +29,11 @@ class UserManager(BaseUserManager):
     
 class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to="avatars/")
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200, null=True, blank=True)
+    last_name = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
-    is_producer = models.BooleanField(default=False)
+    is_artist = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -43,8 +43,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = "email"
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
     
-class Producer(models.Model):
+class Artist(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -53,12 +56,14 @@ class Producer(models.Model):
     category = models.ForeignKey(
         "app.Category",
         on_delete=models.CASCADE,
-        related_name="producer"
+        related_name="producer",
+        null=True,
+        blank=True
     )
     played_time = models.PositiveIntegerField(default=0)
     website = models.URLField(blank=True, null=True)
     location = CountryField()
     is_suspended = models.BooleanField(default=False)
-    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(5)], blank=True, default=0)
     def __str__(self):
         return f"{self.user.username} - {self.user.first_name} {self.user.last_name}"

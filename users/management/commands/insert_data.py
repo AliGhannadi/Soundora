@@ -14,6 +14,7 @@ class Command(BaseCommand):
          producer = Producer.objects.create(user=user, category=category, rating=3.3)
         for _ in range(10):
             category = Category.objects.create(name=self.fake.sentence(nb_words=1))
-            music =  Music.objects.create(name=self.fake.sentence(nb_words=1), category=category, producer=producer, file="musics/Alan_Walker-Faded-musicDel-320/")
+            music =  Music.objects.create(title=self.fake.sentence(nb_words=1), category=category, file="musics/Alan_Walker-Faded-musicDel-320/")
+            music.producer.add(producer)
          
     
