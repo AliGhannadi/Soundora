@@ -2,8 +2,8 @@ import django_filters
 from app.models import Music
 
 class MusicFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(
-        field_name="name",
+    title = django_filters.CharFilter(
+        field_name="title",
         lookup_expr="icontains"
     )
     artist_name = django_filters.CharFilter(
@@ -15,20 +15,20 @@ class MusicFilter(django_filters.FilterSet):
         lookup_expr="icontains"
     )
     created_after = django_filters.DateFilter(
-        field_name="created_date",
+        field_name="uploaded_at",
         lookup_expr="gte"
     )
     created_before = django_filters.DateFilter(
-        field_name="created_date",
+        field_name="uploaded_at",
         lookup_expr="lte"
         
     )
     class Meta:
         model = Music
-        fields = ["name", "artist_name"]
+        fields = ["title", "artist_name"]
         fields = {
-            "is_published": ["exact"],
             "category": ["exact"],
             "artist": ["in", "exact"],
+            "uploaded_at": ["exact"],
             
         }
