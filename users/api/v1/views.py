@@ -7,6 +7,7 @@ from .serializers import RegistrationSerializer, LoginSerializer, RefreshTokenSe
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 class Test(APIView):
     def get(self, request, *args, **kwargs):
         return Response({"detail": "ok"})
@@ -62,10 +63,17 @@ class CustomRefreshTokenAPIView(generics.GenericAPIView):
             
 
 
-class UserAPIView(generics.RetrieveUpdateAPIView):
+class ProfileAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    def get_queryset(self):
-        return User.objects.all()
+    # def get_queryset(self):
+    #     return User.objects.all()
+    
+    # def get_object(self):
+    #     queryset = self.get_queryset()
+    #     obj = get_object_or_404(queryset, pk=self.request.user.pk)
+    #     return obj
+    def get_object(self):
+        return self.request.user
         
         
         
