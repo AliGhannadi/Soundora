@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from users.models import User
+from users.models import User, Artist
+from app.api.v1.serializers import CategorySerializer
 from rest_framework.response import Response
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
@@ -48,7 +49,33 @@ class LoginSerializer(serializers.Serializer):
     
 class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField(max_length=255)
+
+class ArtistSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    class Meta:
+        model = Artist
+        fields = ["user", "category", "played_time", "website", "location", "rating"]    
+       
+class UserSerializer(serializers.ModelSerializer):
+    is_artist = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ["avatar", "first_name", "last_name", "username", "email", "is_artist", "is_staff", "notifications", "phone_number"]
+    def get_is_artist(self, obj):
+        return obj.is_artist
+    def to_representation(self, instance):
+        request = self.context.get("request")
+        data = super().to_representation(instance)
+        if instance.is_artist:
+            if hasattr(instance, 'artist'):
+                artist_instance = instance.artist
+                data["artist"] = ArtistSerializer(artist_instance, context=self.context).data
+        return data
+    # if is_artist:
+    #     artist = ArtistSerializer(read_only=True)
+    #     fields = ["avatar", "first_name", "last_name", "username", "email", "is_artist", "is_staff", "notificiation", "phone_number", "artist"]
     
+        
 
             
 

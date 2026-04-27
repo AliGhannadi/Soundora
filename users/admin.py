@@ -23,6 +23,7 @@ class CustomUserAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "is_verified",
+                    "is_artist",
                 )
             },
         ),

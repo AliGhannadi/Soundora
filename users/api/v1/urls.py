@@ -13,6 +13,7 @@ urlpatterns = [
     path("register/", views.RegistratrionAPIView.as_view(), name="register"),
     path("token/login/", views.LoginAPIView.as_view(), name="login"),
     path("token/refresh-v1", TokenRefreshView.as_view(), name="refresh-v1"),
-    path("token/refresh-v2", views.CustomRefreshTokenAPIView.as_view(), name="refresh-v2")
+    path("token/refresh-v2", views.CustomRefreshTokenAPIView.as_view(), name="refresh-v2"),
+    path("me/<int:pk>", views.UserAPIView.as_view(), name="profile"),
 
 ]

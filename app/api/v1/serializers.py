@@ -4,7 +4,7 @@ from users.models import User, Artist
 from app.models import Category
 # added absolute_url 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserForMusicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "username"]
@@ -14,8 +14,8 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ["id", "name"]
 
-class ArtistSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+class ArtistForMusicSerializer(serializers.ModelSerializer):
+    user = UserForMusicSerializer(read_only=True)
     category = serializers.SlugRelatedField(
             read_only=True,
             slug_field="name"
@@ -28,7 +28,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class MusicListSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    artist = ArtistSerializer(read_only=True)
+    artist = ArtistForMusicSerializer(read_only=True)
     absolute_url = serializers.SerializerMethodField()
     class Meta:
         model = Music
@@ -41,7 +41,7 @@ class MusicListSerializer(serializers.ModelSerializer):
 
 class MusicDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    artist = ArtistSerializer(read_only=True)
+    artist = ArtistForMusicSerializer(read_only=True)
     class Meta:
         model = Music
         fields = ["title", "category", "artist", "lyrics", "cover_image", "uploaded_at", "file"]

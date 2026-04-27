@@ -51,12 +51,12 @@ class Artist(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name="producer"
+        related_name="artist"
     )
     category = models.ForeignKey(
         "app.Category",
         on_delete=models.CASCADE,
-        related_name="producer",
+        related_name="artist",
         null=True,
         blank=True
     )

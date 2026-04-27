@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from users.models import User
-from .serializers import RegistrationSerializer, LoginSerializer, RefreshTokenSerializer
+from .serializers import RegistrationSerializer, LoginSerializer, RefreshTokenSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework import status
@@ -59,7 +59,13 @@ class CustomRefreshTokenAPIView(generics.GenericAPIView):
                 {"detail": "Refresh token is invalid or expired"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        
+            
+
+
+class UserAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        return User.objects.all()
         
         
         
