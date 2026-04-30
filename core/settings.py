@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "djoser",
     "users",
     'app',
     "rest_framework",
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     'rest_framework_simplejwt.token_blacklist',
     "mail_templated",
-    "djoser",
+    
 ]
 
 MIDDLEWARE = [
@@ -159,10 +160,17 @@ AUTHENTICATION_BACKENDS = [
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
 
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 
     "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "reset-password-confirm/{uid}/{token}",
+    "SEND_PASSWORD_RESET_EMAIL": True,
 }
