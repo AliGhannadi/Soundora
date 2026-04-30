@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1 
 
 RUN pip config set global.index-url https://mirror2.chabokan.net/pypi/simple/
-RUN pip install --upgrade pip -i https://mirror-pypi.runflare.com/simple
+RUN pip install --upgrade pip -i https://mirror2.chabokan.net/pypi/simple/
 
 COPY requirements.txt .
 

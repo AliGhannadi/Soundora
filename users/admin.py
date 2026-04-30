@@ -5,15 +5,15 @@ from app.models import Music
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ("email", "first_name", "last_name", "username", "is_superuser", "is_active", "is_verified")
-    list_filter = ("email", "username", "is_superuser", "is_active")
-    search_fields = ("email", "username", "is_superuser", "is_active")
+    list_display = ("email", "first_name", "last_name", "username", "phone_number", "is_superuser", "is_active", "is_verified")
+    list_filter = ("email", "username", "phone_number", "is_superuser", "is_active")
+    search_fields = ("email", "username",  "phone_number", "is_superuser", "is_active")
     ordering = ("pk",)
     actions = ["deactivate_user"]
     def deactivate_user(self, request, queryset):
         queryset.update(is_active=False)
     fieldsets = (
-        (None, {"fields": ("email", "password", "username")}),
+        (None, {"fields": ("email", "phone_number", "password", "username")}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
         (
             "Permissions",

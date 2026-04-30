@@ -3,7 +3,8 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from users.models import User
-from .serializers import RegistrationSerializer, LoginSerializer, RefreshTokenSerializer, UserSerializer
+from .serializers import RegistrationSerializer, LoginSerializer, RefreshTokenSerializer, UserSerializer, SMSVerificationSerializer, SMSVerificationResendSerializer
+from users.api.sms import sms_message
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework import status
@@ -74,6 +75,23 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
     #     return obj
     def get_object(self):
         return self.request.user
+    
+class SMSVerificationAPIView(generics.GenericAPIView):
+    serializer_class = SMSVerificationSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"detail": "User has been verified."}, status=status.HTTP_200_OK)
+    
+class SMSVerificationResendAPIView(generics.GenericAPIView):
+    serializer_class = SMSVerificationResendSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"detail": "Code has been sent."})
+    
+        
+    
         
         
         

@@ -15,5 +15,7 @@ urlpatterns = [
     path("token/refresh-v1", TokenRefreshView.as_view(), name="refresh-v1"),
     path("token/refresh-v2", views.CustomRefreshTokenAPIView.as_view(), name="refresh-v2"),
     path("me/", views.ProfileAPIView.as_view(), name="profile"),
+    path("sms-verification/", views.SMSVerificationAPIView.as_view(), name="sms"),
+    path("resend-sms-verification/", views.SMSVerificationResendAPIView.as_view(), name="resend-sms"),
 
 ]

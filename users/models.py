@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django_countries.fields import CountryField
 
 # Create your models here.
@@ -26,7 +26,11 @@ class UserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
           raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email=email, password=password, **extra_fields)
-    
+
+phone_validator = RegexValidator(
+    regex=r"^099\d{8}$",
+    message="Phone number must start with 099 and contain 11 digits.",
+) 
 class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to="avatars/")
     first_name = models.CharField(max_length=200, null=True, blank=True)
@@ -38,7 +42,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     notifications = models.BooleanField(default=False)
-    phone_number = models.CharField(max_length=11)
+    phone_number = models.CharField(max_length=11,
+                                    unique=True,
+                                    validators=[phone_validator])
     
     objects = UserManager()
     REQUIRED_FIELDS = ["username"]
