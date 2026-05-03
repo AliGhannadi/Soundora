@@ -40,3 +40,8 @@ django-countries
 pillow
 # Music metadata extraction
 mutagen
+celery
+redis
+psycopg2
+psycopg
+kavenegar

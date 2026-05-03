@@ -9,11 +9,15 @@ from django.core import exceptions
 from django.core.cache import cache
 from django.contrib.auth import authenticate
 from rest_framework import status
+from djoser import email
+
 class RegistrationSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(max_length=200, write_only=True)
+    sms_verification = serializers.BooleanField(default=False)
+    
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "username", "email", "phone_number", "password", "password1"]
+        fields = ["first_name", "last_name", "username", "email", "phone_number", "password", "password1", "sms_verification"]
     def validate(self, attrs):
         if(attrs.get("password") != attrs.get("password1")):
             raise serializers.ValidationError({"detail": "Passwords dont match."})
@@ -28,12 +32,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return attrs
     
     def create(self, validated_data):
+        request = self.context.get("request")
         validated_data.pop("password1", None)
+        sms_verification = validated_data["sms_verification"]
+        validated_data.pop("sms_verification", None)
         user = User.objects.create_user(**validated_data)
-        phone_number = user.phone_number
-        code = random.randint(1000, 9999)
-        cache.set(f"verification_{phone_number}", code, timeout=300)
-        sms_message(phone_number, code)
+       
+        if sms_verification:
+         phone_number = user.phone_number
+         code = random.randint(1000, 9999)
+         cache.set(f"verification_{phone_number}", code, timeout=300)
+         sms_message(phone_number, code)
+        else:
+         context = {"user": user}
+         to_email = [user.email]
+         email.ActivationEmail(request, context).send(to_email)
+        
         return user
     
 class LoginSerializer(serializers.Serializer):
@@ -108,7 +122,6 @@ class SMSVerificationSerializer(serializers.Serializer):
      except User.DoesNotExist:
          raise serializers.ValidationError({"detail": "No user found with this phone number"})
      cache.delete(cache_key)
-     cache.delete(f"attempts_{phone_number}")
      return attrs
  
 class SMSVerificationResendSerializer(serializers.Serializer):
