@@ -4,13 +4,20 @@ from django.contrib import messages
 from .utils import extract_music_metadata
 from django.contrib.auth.hashers import make_password
 from .models import User, Artist
+import random
+
 @admin.register(Music)
 class MusicAdmin(admin.ModelAdmin):
-    list_display = ["title", "category", "get_artists", "cover_image", "uploaded_at", "file"]
+    def fake_iran_phone(self):
+      return "09" + "".join(str(random.randint(0, 9)) for _ in range(9))
+
+    list_display = ["title", "get_categories", "get_artists", "cover_image", "uploaded_at", "file"]
     list_filter = ["title", "category"]
     ordering = ("pk",)
     readonly_fields = ["get_artists"]
-    filter_horizontal = ["artist"] 
+    filter_horizontal = ["artist"]
+    def get_categories(self, obj):
+        return ", ".join([p.category for p in obj.category.all()])
     def get_artists(self, obj):
         return ", ".join([p.user.username for p in obj.artist.all()])
     def save_related(self, request, form, formsets, change):
@@ -24,9 +31,10 @@ class MusicAdmin(admin.ModelAdmin):
                                 artist_username = artist_obj.replace(" ", "")
                                 email = f"{artist_username}@admin.com"
                                 user, _ = User.objects.get_or_create(email=email,
-                                                                     defaults={
+                                                                     defaults={ # If the user doesnt exist, it will be created with default username and password
                                                                          'username': artist_username,
-                                                                         'password': make_password("123456")
+                                                                         'password': make_password("123456"),
+                                                                         'phone_number': self.fake_iran_phone(),
                                                                      })
                                 artist, _ = Artist.objects.get_or_create(user=user)
                                 obj.artist.add(artist) # because it is a m2m field

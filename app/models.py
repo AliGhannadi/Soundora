@@ -12,20 +12,26 @@ from django.http import HttpResponse
 # Create your models here.
 class Category(models.Model):
     name=models.CharField(max_length=100)
+    
     def __str__(self):
         return self.name
 
 class Album(models.Model):
     name=models.CharField(max_length=100)
+    artist = models.ManyToManyField(
+        Artist, 
+        related_name="album",
+        null=False,
+        blank=False
+    )
     def __str__(self):
         return self.name
 
 
 class Music(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
-    category = models.ForeignKey(
+    category = models.ManyToManyField(
         Category,
-        on_delete=models.CASCADE,
         related_name="musics",
         blank=True, null=True
         
