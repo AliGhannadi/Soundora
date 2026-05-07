@@ -28,7 +28,7 @@ class ArtistForMusicSerializer(serializers.ModelSerializer):
 
 class MusicListSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    artist = ArtistForMusicSerializer(read_only=True)
+    artist = ArtistForMusicSerializer(read_only=True, many=True)
     absolute_url = serializers.SerializerMethodField()
     class Meta:
         model = Music
@@ -41,7 +41,7 @@ class MusicListSerializer(serializers.ModelSerializer):
 
 class MusicDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    artist = ArtistForMusicSerializer(read_only=True)
+    artist = ArtistForMusicSerializer(read_only=True, many=True)
     class Meta:
         model = Music
         fields = ["title", "category", "artist", "lyrics", "cover_image", "uploaded_at", "file"]

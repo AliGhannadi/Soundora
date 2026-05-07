@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email=email, password=password, **extra_fields)
 
 phone_validator = RegexValidator(
-    regex=r"^099\d{8}$",
+    regex=r"^09\d{9}$",
     message="Phone number must start with 099 and contain 11 digits.",
 ) 
 class User(AbstractBaseUser, PermissionsMixin):

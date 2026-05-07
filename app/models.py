@@ -32,7 +32,7 @@ class Music(models.Model):
     )
     artist = models.ManyToManyField(
         Artist,
-        related_name="artist",
+        related_name="musics",
         blank=True
     )
     album = models.ForeignKey(
