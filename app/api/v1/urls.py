@@ -6,6 +6,6 @@ app_name = "api-v1"
 
 router = DefaultRouter()
 router.register(r'music', views.MusicViewSet, basename="music")
-router.register(r'artist', views.ArtistPanelViewSet, basename="artist-music")
-
+router.register(r'artist', views.ArtistPanelViewSet, basename="artist-panel")
+router.register(r'playlists', views.PlayListViewSet, basename="playlist")
 urlpatterns = router.urls

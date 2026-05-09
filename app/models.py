@@ -97,3 +97,27 @@ class Music(models.Model):
                 if need_update:
                     super().save(update_fields=['title', 'album', 'cover_image'])
                     
+class PlayList(models.Model):
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="playlist",
+    )
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    is_public = models.BooleanField(default=False)
+    musics = models.ManyToManyField(
+        Music,
+        related_name="playlist",
+        null=False
+        
+    )
+    
+class Stats(models.Model):
+    win = models.IntegerField(default=0)
+    mac = models.IntegerField(default=0)
+    iphone = models.IntegerField(default=0)
+    android = models.IntegerField(default=0)
+    other = models.IntegerField(default=0)
+        
+    

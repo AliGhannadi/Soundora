@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from app.models import Music
 from users.models import User, Artist
-from app.models import Category
+from app.models import Category, PlayList
 # added absolute_url 
 
 class UserForMusicSerializer(serializers.ModelSerializer):
@@ -45,3 +45,13 @@ class MusicDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Music
         fields = ["title", "category", "artist", "lyrics", "cover_image", "uploaded_at", "file"]
+        
+
+class PlayListSerializer(serializers.ModelSerializer):
+    owner = ArtistForMusicSerializer(read_only=True, many=True)
+    musics = MusicListSerializer(read_only=True, many=True)
+    class Meta:
+        model = PlayList
+        fields = ["owner", "title", "description", "is_public", "musics"]
+        
+        

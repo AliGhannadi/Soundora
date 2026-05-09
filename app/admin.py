@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Music , Category, Album
+from .models import Music , Category, Album, Stats
 from django.contrib import messages
+from django.urls import path
+from django.shortcuts import render
 from .utils import extract_music_metadata
 from django.contrib.auth.hashers import make_password
 from .models import User, Artist
@@ -54,6 +56,65 @@ class MusicAdmin(admin.ModelAdmin):
                 messages.WARNING
             )
     get_artists.short_description = "Artists"
+
+@admin.register(Stats)
+class StatsAdmin(admin.ModelAdmin):
+    change_list_template = "admin/stats_change_list.html"  # custom template for page button
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("report/", self.admin_site.admin_view(self.stats_report), name="stats-report"),
+        ]
+        return custom_urls + urls
+
+    def stats_report(self, request):
+        stats = Stats.objects.first()  # Only one row expected
+        total = (
+            stats.win
+            + stats.mac
+            + stats.iphone
+            + stats.android
+            + stats.other
+        ) or 1
+        data = [
+            {
+                "name": "Windows",
+                "value": stats.win,
+                "percent": (stats.win / total) * 100,
+                "color": "#4F46E5",
+            },
+            {
+                "name": "Mac",
+                "value": stats.mac,
+                "percent": (stats.mac / total) * 100,
+                "color": "#06B6D4",
+            },
+            {
+                "name": "iPhone",
+                "value": stats.iphone,
+                "percent": (stats.iphone / total) * 100,
+                "color": "#10B981",
+            },
+            {
+                "name": "Android",
+                "value": stats.android,
+                "percent": (stats.android / total) * 100,
+                "color": "#F59E0B",
+            },
+            {
+                "name": "Other",
+                "value": stats.other,
+                "percent": (stats.other / total) * 100,
+                "color": "#EF4444",
+            },
+        ]
+        context = {
+            "stats_data": data,
+            "total": total,
+            "title": "OS Statistics Report",
+        }
+        return render(request, "admin/stats_report.html", context)
 
 
 
