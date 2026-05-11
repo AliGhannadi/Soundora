@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Music , Category, Album, Stats
+from .models import Music , Category, Album, Stats, Like
 from django.contrib import messages
 from django.urls import path
 from django.shortcuts import render
@@ -120,3 +120,4 @@ class StatsAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Album)
+admin.site.register(Like)

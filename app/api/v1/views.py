@@ -4,15 +4,19 @@ from rest_framework.permissions import (
     IsAuthenticated,
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import MusicListSerializer, MusicDetailSerializer, PlayListSerializer
-from app.models import Music, PlayList
+from app.models import Music, PlayList, Like
 from users.models import Artist
 from .pagination import Pagination
 from .filters import MusicFilter
 from .permissions import IsArtist, IsOwnerOrReadOnly
 from rest_framework import serializers
 from django.db.models import Q
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 class MusicViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Music.objects.all()
@@ -25,6 +29,27 @@ class MusicViewSet(viewsets.ReadOnlyModelViewSet):
             return MusicListSerializer
         if self.action == 'retrieve':
             return MusicDetailSerializer
+    # @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    # def like(self, request, pk=None):
+    #     music = self.get_object()
+    #     user = request.user
+        
+    #     if user in music.likes.all():
+    #         music.likes.remove()
+    #         message = 'Music unliked.'
+    #         is_liked = False
+    #     else:
+    #         music.likes.add(user)
+    #         message = "Music liked."
+    #         is_liked = True
+    #     return Response({
+    #         "message": message,
+    #         "likes_count": music.likes.count(),
+    #         "is_liked": is_liked
+    #     }, status=status.HTTP_200_OK)
+    # Optional action instead of using seperate model and view for like
+    
+            
         
         
 class ArtistPanelViewSet(viewsets.ModelViewSet):
@@ -59,6 +84,37 @@ class PlayListViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(owner=user)
+        
+
+class ToggleLikeView(APIView):
+    def post(self, request, music_id):
+        try:
+            music = Music.objects.get(pk=music_id)                 
+        except Music.DoesNotExist:
+            return Response({"detail": "Music not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            like = Like.objects.get(user=request.user, music=music)
+            like.delete()
+            message = "Like has been deleted."
+            is_liked = False
+        except Like.DoesNotExist:
+            Like.objects.create(user=request.user, music=music)
+            message = "Music has been liked."
+            is_liked = True
+
+        return Response(
+            {
+            "message": message,
+            "is_liked": is_liked,
+            
+            })
+        # getting music id
+        # try
+        ### see if the music exists or not
+        ### give the like to founded music, if is_like is false
+        ### unlike the liek to founded music, if is_like is true
+
+        # raise exception
     
      
     

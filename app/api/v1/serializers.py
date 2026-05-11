@@ -37,7 +37,6 @@ class MusicListSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         relative_url = obj.get_absolute_api_url()
         return request.build_absolute_uri(relative_url)
-    
 
 class MusicDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
@@ -67,5 +66,3 @@ class PlayListSerializer(serializers.ModelSerializer):
         model = PlayList
         fields = ["owner", "title", "description", "is_public", "musics", "music_list", "absolute_url"]    
  
-        
-        

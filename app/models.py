@@ -58,6 +58,10 @@ class Music(models.Model):
     auto_fill_artist = models.BooleanField(default=True, verbose_name="Producer Auto-Fill")
     auto_fill_artist = models.BooleanField(default=True, verbose_name="Artist Auto-Fill")
     
+    @property
+    def likes_count(self):
+        return self.likes.count()
+    
     def get_absolute_api_url(self):
         return reverse("app:api-v1:music-detail", kwargs={"pk": self.id})
     def __str__(self):
@@ -120,5 +124,23 @@ class Stats(models.Model):
     iphone = models.IntegerField(default=0)
     android = models.IntegerField(default=0)
     other = models.IntegerField(default=0)
-        
     
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    music = models.ForeignKey(
+        Music,
+        on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        # Ensures a user can only like a music track once.
+        unique_together = ('user', 'music')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.user.username} likes {self.music.title}'
