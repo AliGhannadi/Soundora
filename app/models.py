@@ -109,9 +109,10 @@ class PlayList(models.Model):
     musics = models.ManyToManyField(
         Music,
         related_name="playlist",
-        null=False
         
     )
+    def get_absolute_api_url(self):
+        return reverse("app:api-v1:playlist-detail", kwargs={"pk": self.id})
     
 class Stats(models.Model):
     win = models.IntegerField(default=0)
