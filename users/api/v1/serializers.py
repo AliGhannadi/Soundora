@@ -3,12 +3,10 @@ from rest_framework import serializers
 from users.models import User, Artist
 from app.api.v1.serializers import CategorySerializer
 from users.api.sms import sms_message
-from rest_framework.response import Response
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from django.core.cache import cache
 from django.contrib.auth import authenticate
-from rest_framework import status
 from djoser import email
 
 
@@ -125,7 +123,6 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.is_artist
 
     def to_representation(self, instance):
-        request = self.context.get("request")
         data = super().to_representation(instance)
         if instance.is_artist:
             if hasattr(instance, "artist"):

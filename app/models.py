@@ -3,11 +3,7 @@ from users.models import Artist, User
 from django.urls import reverse
 import uuid
 from django.core.files.base import ContentFile
-from django.shortcuts import redirect
-from django.urls import reverse
 from .utils import extract_music_metadata
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse
 
 
 # Create your models here.

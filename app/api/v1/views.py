@@ -1,18 +1,15 @@
-from rest_framework import viewsets, generics
+from rest_framework import viewsets
 from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
     IsAuthenticated,
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import MusicListSerializer, MusicDetailSerializer, PlayListSerializer
 from app.models import Music, PlayList, Like
-from users.models import Artist
 from .pagination import Pagination
 from .filters import MusicFilter
 from .permissions import IsArtist, IsOwnerOrReadOnly
-from rest_framework import serializers
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -115,10 +112,3 @@ class ToggleLikeView(APIView):
                 "is_liked": is_liked,
             }
         )
-        # getting music id
-        # try
-        ### see if the music exists or not
-        ### give the like to founded music, if is_like is false
-        ### unlike the liek to founded music, if is_like is true
-
-        # raise exception
