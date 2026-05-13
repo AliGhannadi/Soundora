@@ -18,22 +18,25 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+
 class MusicViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Music.objects.all()
     permission_classes = [IsAuthenticated]
     pagination_class = Pagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = MusicFilter
+
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return MusicListSerializer
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return MusicDetailSerializer
+
     # @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     # def like(self, request, pk=None):
     #     music = self.get_object()
     #     user = request.user
-        
+
     #     if user in music.likes.all():
     #         music.likes.remove()
     #         message = 'Music unliked.'
@@ -48,50 +51,54 @@ class MusicViewSet(viewsets.ReadOnlyModelViewSet):
     #         "is_liked": is_liked
     #     }, status=status.HTTP_200_OK)
     # Optional action instead of using seperate model and view for like
-    
-            
-        
-        
+
+
 class ArtistPanelViewSet(viewsets.ModelViewSet):
-     permission_classes = [IsArtist, IsAuthenticated]
-     def get_queryset(self):
-         user = self.request.user
-         if hasattr(user, 'artist'):
-             return Music.objects.filter(artist=user.artist)
-         return Music.objects.none()
-     def get_serializer_class(self):
-        if self.action == 'list':
+    permission_classes = [IsArtist, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, "artist"):
+            return Music.objects.filter(artist=user.artist)
+        return Music.objects.none()
+
+    def get_serializer_class(self):
+        if self.action == "list":
             return MusicListSerializer
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return MusicDetailSerializer
         return MusicDetailSerializer
-     def perform_create(self, serializer):
+
+    def perform_create(self, serializer):
         user = self.request.user
         artist = user.artist
         serializer.save(artist=[artist])
-        
+
+
 class PlayListViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly]
     serializer_class = PlayListSerializer
     pagination_class = Pagination
+
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated:
-           return PlayList.objects.filter(
-               Q(is_public=True) | Q(owner=user)
-           )
+            return PlayList.objects.filter(Q(is_public=True) | Q(owner=user))
         return PlayList.objects.filter(is_public=True)
+
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(owner=user)
-        
+
 
 class ToggleLikeView(APIView):
     def post(self, request, music_id):
         try:
-            music = Music.objects.get(pk=music_id)                 
+            music = Music.objects.get(pk=music_id)
         except Music.DoesNotExist:
-            return Response({"detail": "Music not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Music not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         try:
             like = Like.objects.get(user=request.user, music=music)
             like.delete()
@@ -104,10 +111,10 @@ class ToggleLikeView(APIView):
 
         return Response(
             {
-            "message": message,
-            "is_liked": is_liked,
-            
-            })
+                "message": message,
+                "is_liked": is_liked,
+            }
+        )
         # getting music id
         # try
         ### see if the music exists or not
@@ -115,6 +122,3 @@ class ToggleLikeView(APIView):
         ### unlike the liek to founded music, if is_like is true
 
         # raise exception
-    
-     
-    

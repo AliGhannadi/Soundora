@@ -6,6 +6,7 @@ from django_countries.fields import CountryField
 
 # Create your models here.
 
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -14,23 +15,26 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
-        
+
         return user
-    
+
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_verified", True)
         extra_fields.setdefault("is_superuser", True)
         if extra_fields.get("is_staff") is not True:
-          raise ValueError("Superuser must have is_staff=True.")
+            raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
-          raise ValueError("Superuser must have is_superuser=True.")
+            raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email=email, password=password, **extra_fields)
+
 
 phone_validator = RegexValidator(
     regex=r"^09\d{9}$",
     message="Phone number must start with 099 and contain 11 digits.",
-) 
+)
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to="avatars/")
     first_name = models.CharField(max_length=200, null=True, blank=True)
@@ -42,36 +46,39 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     notifications = models.BooleanField(default=False)
-    phone_number = models.CharField(max_length=11,
-                                    unique=True,
-                                    validators=[phone_validator])
-    
+    phone_number = models.CharField(
+        max_length=11, unique=True, validators=[phone_validator]
+    )
+
     objects = UserManager()
     REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = "email"
+
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
 
-    
 class Artist(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name="artist"
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="artist")
     category = models.ForeignKey(
         "app.Category",
         on_delete=models.CASCADE,
         related_name="artist",
         null=True,
-        blank=True
+        blank=True,
     )
     played_time = models.PositiveIntegerField(default=0)
     website = models.URLField(blank=True, null=True)
     location = CountryField()
     is_suspended = models.BooleanField(default=False)
-    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(5)], blank=True, default=0)
+    rating = models.DecimalField(
+        max_digits=2,
+        decimal_places=1,
+        validators=[MinValueValidator(0), MaxValueValidator(5)],
+        blank=True,
+        default=0,
+    )
+
     def __str__(self):
         return f"{self.user.username} - {self.user.first_name} {self.user.last_name}"
