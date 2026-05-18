@@ -1,0 +1,223 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django static/media collected files
+staticfiles/
+media/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.env.*
+.venv
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pyright
+.pyright/
+
+# Ruff
+.ruff_cache/
+
+# Pyre type checker
+.pyre/
+
+# Pylint
+.pylint.d/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Docker Compose override
+docker-compose.override.yml
+
+# Gunicorn
+gunicorn.pid
+
+# Secrets and keys
+*.pem
+*.key
+*.crt
+secrets.json
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Node modules (if using frontend tools)
+node_modules/
+
+# npm/yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Static build tools
+.parcel-cache/
+.next/
+.nuxt/
+dist/
+
+# VS Code test folders
+.vscode-test/
+
+# PyCharm
+.idea/
+
+# SQLite backups
+*.sqlite3
+
+# Redis dump
+dump.rdb
+
+# Sentry
+.sentryclirc
+
+# dotenv
+.envrc
+
+# pytest
+pytestdebug.log
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# uv
+uv.lock
+
+# pyenv
+.python-version
+
+# django migrations cache
+**/__pycache__/
+
+# Ignore collected static files
+/staticfiles
+
+# Ignore uploaded files in development
+/media
+
+# Ignore local email backend files
+sent_emails/
+
+# Ignore cache
+.cache/
+
+# Ignore profiling data
+.prof

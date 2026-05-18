@@ -32,6 +32,7 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="contact@todo.local"),
         license=openapi.License(name="BSD License"),
     ),
+    url=settings.API_BASE_URL,
     public=True,
     permission_classes=[permissions.AllowAny],
 )

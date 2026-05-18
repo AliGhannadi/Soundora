@@ -42,6 +42,8 @@ pillow
 mutagen
 celery
 redis
+gunicorn
+python-decouple
 psycopg2
 psycopg
 kavenegar

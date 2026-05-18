@@ -1,8 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly,
-    IsAuthenticated,
-)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import MusicListSerializer, MusicDetailSerializer, PlayListSerializer
@@ -73,7 +70,7 @@ class ArtistPanelViewSet(viewsets.ModelViewSet):
 
 
 class PlayListViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
     serializer_class = PlayListSerializer
     pagination_class = Pagination
 
@@ -89,6 +86,8 @@ class PlayListViewSet(viewsets.ModelViewSet):
 
 
 class ToggleLikeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, music_id):
         try:
             music = Music.objects.get(pk=music_id)

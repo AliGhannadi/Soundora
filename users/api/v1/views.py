@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.models import User
 from .serializers import (
     RegistrationSerializer,
@@ -22,16 +23,19 @@ from django.contrib.auth.tokens import default_token_generator
 
 
 class Test(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
         return Response({"detail": "ok"})
 
 
 class RegistratrionAPIView(CreateAPIView):
+    permission_classes = [AllowAny]
     serializer_class = RegistrationSerializer
 
 
 class LoginAPIView(generics.GenericAPIView):
-    permission_classes = []
+    permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
@@ -49,6 +53,7 @@ class LoginAPIView(generics.GenericAPIView):
 
 
 class CustomRefreshTokenAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
     serializer_class = RefreshTokenSerializer
 
     def post(self, request, *args, **kwargs):
@@ -79,6 +84,7 @@ class CustomRefreshTokenAPIView(generics.GenericAPIView):
 
 
 class ProfileAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     # def get_queryset(self):
     #     return User.objects.all()
@@ -92,6 +98,7 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
 
 
 class SMSVerificationAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
     serializer_class = SMSVerificationSerializer
 
     def post(self, request, *args, **kwargs):
