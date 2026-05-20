@@ -1,49 +1,63 @@
-asgiref==3.10.0
-attrs==25.4.0
-black==26.3.1
-click==8.3.1
-colorama==0.4.6
+# --- Core Framework & Web Server ---
 Django==5.2
-django-filter==25.2
-django-mail-templated==2.6.5
+gunicorn
+asgiref==3.10.0
+
+# --- REST API & Authentication ---
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
+PyJWT==2.11.0
+djoser
+django-cors-headers
 drf-yasg==1.21.15
-importlib_resources==6.5.2
+swagger-spec-validator==3.0.4
 inflection==0.5.1
-iniconfig==2.3.0
-jsonschema==4.26.0
-jsonschema-specifications==2025.9.1
+uritemplate==4.2.0
+
+# --- Database & Data Handling ---
+psycopg2
+psycopg
+sqlparse==0.5.3
+django-filter==25.2
+django-countries
+pytz==2026.1.post1
+tzdata==2025.2
+
+# --- Background Tasks & Queueing ---
+celery
+redis
+
+# --- Media & External Services ---
+pillow
+mutagen  # Music metadata extraction
+kavenegar # SMS service
+
+# --- Configuration & Environment ---
+python-decouple
+
+# --- Development, Testing & Code Quality ---
+pytest==9.0.2
+pytest-django==4.12.0
+black==26.3.1
 mypy_extensions==1.1.0
+faker
+colorama==0.4.6
+Pygments==2.19.2
+click==8.3.1
+pluggy==1.6.0
+iniconfig==2.3.0
 packaging==26.0
 pathspec==1.0.4
 platformdirs==4.9.4
-pluggy==1.6.0
-Pygments==2.19.2
-PyJWT==2.11.0
-pytest==9.0.2
-pytest-django==4.12.0
-pytokens==0.4.1
-pytz==2026.1.post1
-PyYAML==6.0.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
 referencing==0.37.0
 rpds-py==0.30.0
-sqlparse==0.5.3
-swagger-spec-validator==3.0.4
 typing_extensions==4.15.0
-tzdata==2025.2
-uritemplate==4.2.0
-faker
-django-cors-headers
-djoser
-django-countries
-pillow
-# Music metadata extraction
-mutagen
-celery
-redis
-gunicorn
-python-decouple
-psycopg2
-psycopg
-kavenegar
+importlib_resources==6.5.2
+pytokens==0.4.1
+PyYAML==6.0.3
+
+# --- Utilities ---
+django-mail-templated==2.6.5
+attrs==25.4.0

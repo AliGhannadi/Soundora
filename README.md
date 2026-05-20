@@ -16,11 +16,9 @@ Soundora is a Django REST Framework backend for a music platform. It provides us
   - [Option B: Local Python Setup](#option-b-local-python-setup)
 - [Database Migrations](#database-migrations)
 - [API Documentation](#api-documentation)
-- [API Endpoints](#api-endpoints)
 - [Authentication](#authentication)
 - [Data Models](#data-models)
 - [Background Tasks (Celery)](#background-tasks-celery)
-- [Admin Panel](#admin-panel)
 - [Management Commands](#management-commands)
 - [Development Tools](#development-tools)
 - [Production Deployment](#production-deployment)
@@ -242,112 +240,6 @@ Once the server is running, interactive API docs are available at:
 
 ---
 
-## API Endpoints
-
-Base URL: `http://localhost:8000`
-
-### User & Authentication (`/user/api/v1/`)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/user/api/v1/test/` | No | Health check |
-| POST | `/user/api/v1/register/` | No | Register a new user |
-| POST | `/user/api/v1/token/login/` | No | Login and receive JWT tokens |
-| POST | `/user/api/v1/token/refresh-v1` | No | Refresh access token (Simple JWT) |
-| POST | `/user/api/v1/token/refresh-v2` | No | Refresh with token rotation & blacklisting |
-| GET / PATCH | `/user/api/v1/me/` | Yes | Retrieve or update profile |
-| POST | `/user/api/v1/sms-verification/` | No | Verify account via SMS code |
-| POST | `/user/api/v1/resend-sms-verification/` | No | Resend SMS verification code |
-| POST | `/user/api/v1/email-verification/` | No | Verify account via email token |
-| POST | `/user/api/v1/resend-email-verification/` | No | Resend activation email |
-| POST | `/user/api/v1/reset_password/` | No | Request password reset email |
-| POST | `/user/api/v1/reset_password_confirm/` | No | Confirm password reset |
-
-#### Registration Example
-
-```json
-POST /user/api/v1/register/
-{
-  "first_name": "Ali",
-  "last_name": "Example",
-  "username": "ali_music",
-  "email": "ali@example.com",
-  "phone_number": "09123456789",
-  "password": "SecurePass123!",
-  "password1": "SecurePass123!",
-  "sms_verification": false
-}
-```
-
-Set `"sms_verification": true` to receive a 4-digit code via SMS instead of an activation email.
-
-#### Login Example
-
-```json
-POST /user/api/v1/token/login/
-{
-  "email": "ali@example.com",
-  "password": "SecurePass123!"
-}
-```
-
-Response:
-
-```json
-{
-  "email": "ali@example.com",
-  "refresh": "<refresh_token>",
-  "access": "<access_token>"
-}
-```
-
----
-
-### Music & Playlists (`/core/api/v1/`)
-
-All endpoints below require a valid JWT unless noted otherwise.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/core/api/v1/music/` | List music (paginated, filterable) |
-| GET | `/core/api/v1/music/{id}/` | Music detail |
-| GET | `/core/api/v1/artist/` | List artist's own music |
-| POST | `/core/api/v1/artist/` | Upload music (artist only) |
-| GET | `/core/api/v1/artist/{id}/` | Artist music detail |
-| PUT/PATCH | `/core/api/v1/artist/{id}/` | Update own music |
-| DELETE | `/core/api/v1/artist/{id}/` | Delete own music |
-| GET | `/core/api/v1/playlists/` | List public + own playlists |
-| POST | `/core/api/v1/playlists/` | Create playlist |
-| GET | `/core/api/v1/playlists/{id}/` | Playlist detail |
-| PUT/PATCH | `/core/api/v1/playlists/{id}/` | Update own playlist |
-| DELETE | `/core/api/v1/playlists/{id}/` | Delete own playlist |
-| POST | `/core/api/v1/toggle-like/{music_id}` | Toggle like on a track |
-
-#### Music Filters
-
-Query parameters for `GET /core/api/v1/music/`:
-
-| Parameter | Description |
-|-----------|-------------|
-| `title` | Filter by title (case-insensitive contains) |
-| `artist_name` | Filter by artist username |
-| `lyrics` | Filter by lyrics content |
-| `category` | Exact category match |
-| `artist` | Filter by artist ID |
-| `created_after` | Uploaded on or after date |
-| `created_before` | Uploaded on or before date |
-| `search` | Full-text search |
-| `ordering` | Sort results |
-| `page` | Page number (5 items per page) |
-
-#### Authorization Header
-
-```
-Authorization: Bearer <access_token>
-```
-
----
-
 ## Authentication
 
 Soundora uses **JWT Bearer tokens** for API authentication.
@@ -370,7 +262,7 @@ Features:
 
 ### User (`users.User`)
 
-Custom user with email as the login field. Key fields: `username`, `email`, `phone_number` (Iranian format `09XXXXXXXXX`), `avatar`, `is_artist`, `is_verified`, `notifications`.
+Custom user with email as the login field. Key fields: `username`, `email`, `phone_number` (Iran format `09XXXXXXXXX`), `avatar`, `is_artist`, `is_verified`, `notifications`.
 
 ### Artist (`users.Artist`)
 
@@ -408,18 +300,6 @@ Configuration (from `core/settings/base.py`):
 - Broker: `redis://{REDIS_HOST}:{REDIS_PORT}/0`
 - Result backend: `redis://{REDIS_HOST}:{REDIS_PORT}/1`
 - Timezone: `Asia/Tehran`
-
----
-
-## Admin Panel
-
-Access at `http://localhost:8000/admin/`
-
-Features:
-
-- **Music admin** — Auto-fill artist/producer from audio metadata; creates placeholder user accounts for unknown artists
-- **Stats report** — Visual OS distribution report at `/admin/app/stats/report/`
-- Manage categories, albums, likes, users, and artists
 
 ---
 
@@ -491,4 +371,4 @@ Nginx serves `/static/` and `/media/` directly. All other requests are proxied t
 
 ## License
 
-This project does not specify a license. Contact the repository owner for usage terms.
+This project is under MIT License.
