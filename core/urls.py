@@ -25,12 +25,12 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Blog App API",
+        title="Soundora API",
         default_version="v1",
-        description="API documentation for Blog project",
+        description="Soundora API",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@todo.local"),
-        license=openapi.License(name="BSD License"),
+        contact=openapi.Contact(email="ali.ghannadi218@gmail.com"),
+        license=openapi.License(name="MIT License"),
     ),
     url=settings.API_BASE_URL,
     public=True,

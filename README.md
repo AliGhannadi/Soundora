@@ -4,7 +4,6 @@ Soundora is a Django REST Framework backend for a music platform. It provides us
 
 ---
 
-## Table of Contents
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -113,19 +112,27 @@ Soundora/
 Create a `.env` file in the project root. The file is gitignored and must be created manually.
 
 ```env
-# Redis (required for base settings)
-REDIS_HOST=redis
-REDIS_PORT=6379
+SECRET_KEY=django-secret-key
+ALLOWED_HOSTS=127.0.0.1,localhost
+API_BASE_URL=http://127.0.0.1:81
 
-# Production only (core.settings.prod)
-SECRET_KEY=your-django-secret-key
-ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com
+
+POSTGRES_DB_DEV=soundora
+POSTGRES_USER_DEV=alidb
+POSTGRES_PASSWORD_DEV=ali72387238
+POSTGRES_HOST_DEV=postgres_db
+POSTGRES_PORT_DEV=5432
+
+
 
 POSTGRES_DB=soundora
-POSTGRES_USER=your_db_user
-POSTGRES_PASSWORD=your_db_password
+POSTGRES_USER=alidb
+POSTGRES_PASSWORD=ali72387238
 POSTGRES_HOST=postgres_db
 POSTGRES_PORT=5432
+
+REDIS_HOST=redis
+REDIS_PORT=6379
 ```
 
 For SMS verification, set your Kavenegar API key in `users/api/sms.py`:
@@ -133,7 +140,7 @@ For SMS verification, set your Kavenegar API key in `users/api/sms.py`:
 ```python
 api = KavenegarAPI("YOUR_API_KEY")
 ```
-
+It can also be changed to any other SMS API provider.
 ---
 
 ## Getting Started
@@ -236,7 +243,7 @@ Once the server is running, interactive API docs are available at:
 | `http://localhost:8000/redoc/` | ReDoc |
 | `http://localhost:8000/swagger/output.json` | OpenAPI schema (JSON) |
 
-> **Note:** The Swagger title currently reads "Blog App API" — update `core/urls.py` to reflect the Soundora project name.
+
 
 ---
 
@@ -329,17 +336,6 @@ black .
 flake8 .
 ```
 
-Configuration: `.flake8` (max line length 88, excludes migrations and virtual environments).
-
-### Testing (Pytest)
-
-```bash
-pytest
-```
-
-> **Note:** Local commands use `core.settings.dev` by default (`manage.py`). Production Docker uses `core.settings.prod` via `DJANGO_SETTINGS_MODULE` in `docker-compose-prod.yml`.
-
----
 
 ## Production Deployment
 
