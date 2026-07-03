@@ -56,6 +56,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
             email.ActivationEmail(request, context).send(to_email)
 
         return user
+    
+class ResendEmailVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
 
 class LoginSerializer(serializers.Serializer):
