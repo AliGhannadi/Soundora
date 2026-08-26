@@ -15,6 +15,7 @@ Soundora is a Django REST Framework backend for a music platform. It provides us
   - [Option B: Local Python Setup](#option-b-local-python-setup)
 - [Database Migrations](#database-migrations)
 - [API Documentation](#api-documentation)
+- [API Endpoints](#api-endpoints)
 - [Authentication](#authentication)
 - [Data Models](#data-models)
 - [Background Tasks (Celery)](#background-tasks-celery)
@@ -244,6 +245,76 @@ Once the server is running, interactive API docs are available at:
 | `http://localhost:8000/swagger/output.json` | OpenAPI schema (JSON) |
 
 
+
+---
+
+## API Endpoints
+
+All API endpoints are prefixed with `/user/api/v1/` (users) or `/core/api/v1/` (music). Unless marked otherwise, endpoints require a JWT access token in the `Authorization` header.
+
+### Users & Authentication (`/user/api/v1/`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/user/api/v1/test/` | Test endpoint |
+| `POST` | `/user/api/v1/register/` | Register a new user |
+| `POST` | `/user/api/v1/token/login/` | Log in and obtain JWT tokens |
+| `POST` | `/user/api/v1/token/refresh-v1` | Refresh access token (Simple JWT) |
+| `POST` | `/user/api/v1/token/refresh-v2` | Refresh access token (custom view) |
+| `GET` | `/user/api/v1/me/` | Get current user profile |
+| `POST` | `/user/api/v1/sms-verification/` | Verify account via SMS code |
+| `POST` | `/user/api/v1/resend-sms-verification/` | Resend SMS verification code |
+| `POST` | `/user/api/v1/reset_password/` | Request password reset |
+| `POST` | `/user/api/v1/reset_password_confirm/` | Confirm password reset |
+| `POST` | `/user/api/v1/email-verification/` | Activate account via email link |
+| `POST` | `/user/api/v1/resend-email-verification/` | Resend activation email |
+
+### Music (`/core/api/v1/`) — Authenticated users
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/core/api/v1/music/` | List music tracks (filter, search, order, paginate) |
+| `GET` | `/core/api/v1/music/{id}/` | Retrieve a single track with details |
+
+### Artist Panel (`/core/api/v1/artist/`) — Verified artists only
+
+Full CRUD on the artist's own music:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/core/api/v1/artist/` | List the artist's own tracks |
+| `POST` | `/core/api/v1/artist/` | Upload a new track (auto metadata extraction) |
+| `GET` | `/core/api/v1/artist/{id}/` | Retrieve one of the artist's tracks |
+| `PUT` | `/core/api/v1/artist/{id}/` | Update a track |
+| `PATCH` | `/core/api/v1/artist/{id}/` | Partially update a track |
+| `DELETE` | `/core/api/v1/artist/{id}/` | Delete a track |
+
+### Playlists (`/core/api/v1/playlists/`) — Authenticated users
+
+Public playlists are visible to everyone; owners have full control over their own playlists:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/core/api/v1/playlists/` | List public + own playlists |
+| `POST` | `/core/api/v1/playlists/` | Create a playlist |
+| `GET` | `/core/api/v1/playlists/{id}/` | Retrieve a playlist |
+| `PUT` | `/core/api/v1/playlists/{id}/` | Update an owned playlist |
+| `PATCH` | `/core/api/v1/playlists/{id}/` | Partially update an owned playlist |
+| `DELETE` | `/core/api/v1/playlists/{id}/` | Delete an owned playlist |
+
+### Likes (`/core/api/v1/`) — Authenticated users
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/core/api/v1/toggle-like/{music_id}` | Toggle like/unlike on a track |
+
+### Other URLs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/admin/` | Django admin panel |
+| `GET` | `/api-auth/` | DRF browsable API login/logout |
+| `GET` | `/media/...` | Uploaded media files (music, cover images) |
 
 ---
 
