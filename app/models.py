@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from users.models import Artist, User
 from django.urls import reverse
@@ -44,9 +45,6 @@ class Music(models.Model):
         default=True, verbose_name="CoverImage Auto-Fill"
     )
     auto_fill_artist = models.BooleanField(
-        default=True, verbose_name="Producer Auto-Fill"
-    )
-    auto_fill_artist = models.BooleanField(
         default=True, verbose_name="Artist Auto-Fill"
     )
 
@@ -65,20 +63,18 @@ class Music(models.Model):
         is_new = self.pk is None
         if is_new:
             super().save(*args, **kwargs)
-        if self.file:
-            file_path = self.file.path
-            metadata = extract_music_metadata(file_path)
+        if self.file and os.path.isfile(self.file.path):
+            metadata = extract_music_metadata(self.file.path)
             if metadata:
-                need_update = False
+                update_fields = []
                 if not self.title and metadata.get("title") and self.auto_fill_title:
                     self.title = metadata.get("title")
-                    need_update = True
+                    update_fields.append("title")
                 if not self.album and metadata.get("album") and self.auto_fill_album:
                     album, _ = Album.objects.get_or_create(name=metadata.get("album"))
                     self.album = album
-                    need_update = True
+                    update_fields.append("album")
                 if not self.cover_image and self.auto_fill_coverimage:
-                    # handles the cover image conversion
                     image_data = metadata.get("cover_image_data")
                     mime_type = metadata.get("cover_mime_type")
                     if image_data:
@@ -88,11 +84,10 @@ class Music(models.Model):
                         filename = f"cover_{uuid.uuid4().hex[:8]}.{ext}"
                         django_file = ContentFile(image_data, name=filename)
                         self.cover_image.save(filename, django_file, save=False)
-                    need_update = True
+                        update_fields.append("cover_image")
 
-                # Updating regular fields
-                if need_update:
-                    super().save(update_fields=["title", "album", "cover_image"])
+                if update_fields:
+                    super().save(update_fields=update_fields)
 
 
 class PlayList(models.Model):

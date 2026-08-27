@@ -412,13 +412,24 @@ flake8 .
 
 1. Set all required environment variables in `.env`
 2. Set `DJANGO_SETTINGS_MODULE=core.settings.prod` (configured automatically in `docker-compose-prod.yml`)
-3. Build and start the production stack:
+3. **Enable SSL settings in `core/settings/prod.py`:**
+
+```python
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+USE_X_FORWARDED_HOST = True
+```
+
+These are disabled by default for local development. **You must enable them in production** to ensure cookies are only sent over HTTPS and Django correctly handles requests behind Nginx.
+
+4. Build and start the production stack:
 
 ```bash
 docker compose -f docker-compose-prod.yml up --build -d
 ```
 
-4. Run migrations:
+5. Run migrations:
 
 ```bash
 docker exec -it django python manage.py migrate

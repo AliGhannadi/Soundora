@@ -8,17 +8,17 @@ from django_countries.fields import CountryField
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, phone_number=None, password=None, **extra_fields):
         if not email:
             raise ValueError("Email Required")
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email, phone_number=phone_number, **extra_fields)
         user.set_password(password)
         user.save()
 
         return user
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, phone_number, password, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_verified", True)
         extra_fields.setdefault("is_superuser", True)
@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(email=email, password=password, **extra_fields)
+        return self.create_user(email=email, phone_number=phone_number, password=password, **extra_fields)
 
 
 phone_validator = RegexValidator(
@@ -36,7 +36,7 @@ phone_validator = RegexValidator(
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    avatar = models.ImageField(upload_to="avatars/")
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
     first_name = models.CharField(max_length=200, null=True, blank=True)
     last_name = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=150, unique=True)
@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     objects = UserManager()
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["username", "phone_number"]
     USERNAME_FIELD = "email"
 
     @property

@@ -1,5 +1,5 @@
 from kavenegar import *
-
+from decouple import config
 
 def sms_message(receptor, code):
     message = f"Soundora Verifiction Code: {code}"

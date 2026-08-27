@@ -28,7 +28,7 @@ class MusicAdmin(admin.ModelAdmin):
     filter_horizontal = ["artist"]
 
     def get_categories(self, obj):
-        return ", ".join([p.category for p in obj.category.all()])
+        return ", ".join([p.name for p in obj.category.all()])
 
     def get_artists(self, obj):
         return ", ".join([p.user.username for p in obj.artist.all()])

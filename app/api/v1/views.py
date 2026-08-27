@@ -11,15 +11,19 @@ from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
+from django.db import transaction
 
-
+@method_decorator(cache_page(60 * 5, cache="page_cache", key_prefix="music_list"), name="list")
+@method_decorator(vary_on_headers("Authorization"), name="list")
 class MusicViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Music.objects.all()
+    queryset = Music.objects.filter(is_published=True)
     permission_classes = [IsAuthenticated]
     pagination_class = Pagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = MusicFilter
-
     def get_serializer_class(self):
         if self.action == "list":
             return MusicListSerializer
@@ -66,7 +70,8 @@ class ArtistPanelViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
         artist = user.artist
-        serializer.save(artist=[artist])
+        serializer.save()
+        serializer.instance.artist.add(artist)
 
 
 class PlayListViewSet(viewsets.ModelViewSet):
@@ -95,15 +100,16 @@ class ToggleLikeView(APIView):
             return Response(
                 {"detail": "Music not found"}, status=status.HTTP_404_NOT_FOUND
             )
-        try:
-            like = Like.objects.get(user=request.user, music=music)
+        like, is_created = Like.objects.get_or_create(user=request.user, music=music)
+        if is_created:
             like.delete()
             message = "Like has been deleted."
             is_liked = False
-        except Like.DoesNotExist:
+        else: 
             Like.objects.create(user=request.user, music=music)
             message = "Music has been liked."
             is_liked = True
+            
 
         return Response(
             {

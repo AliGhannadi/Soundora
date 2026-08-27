@@ -9,6 +9,13 @@ from django.core.cache import cache
 from django.contrib.auth import authenticate
 from djoser import email
 
+# Optional Avatar Upload 
+class OptionalAvatarField(serializers.ImageField):
+    def to_internal_value(self, data):
+        if data in ("", None):
+            return None
+        return super().to_internal_value(data)
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(max_length=200, write_only=True)
@@ -49,6 +56,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             phone_number = user.phone_number
             code = random.randint(1000, 9999)
             cache.set(f"verification_{phone_number}", code, timeout=300)
+            cache.set(f"verification_{phone_number}_attempt", 0, 300)
             sms_message(phone_number, code)
         else:
             context = {"user": user}
@@ -107,6 +115,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     is_artist = serializers.SerializerMethodField()
+    avatar = OptionalAvatarField(required=False, allow_null=True)
 
     class Meta:
         model = User
@@ -147,16 +156,18 @@ class SMSVerificationSerializer(serializers.Serializer):
     def validate(self, attrs):
         phone_number = attrs.get("phone_number")
         code = attrs.get("code")
-        cached_code = cache.get(f"verification_{phone_number}")
-        cache_key = f"verification_{phone_number}"
-        #  attempts = cache.get(cache_key, 0)
-        #  if attempts >= 15:
-        #      raise serializers.ValidationError({"detail": "Limitation reached. Plaese try again later."})
+        cached_code_str = f"verification_{phone_number}"
+        cached_code = cache.get(cached_code_str)
+        cache_attempt_key = f"verification_{phone_number}_attempt"
+        attempts = cache.get(cache_attempt_key, 0)
+        if attempts >= 3:
+            raise serializers.ValidationError({"detail": "Limitation reached. Plaese try again later."})
         if cached_code is None:
             raise serializers.ValidationError(
                 {"detail": "code is expired or not found or user is already verified."}
             )
         if str(cached_code) != str(code):
+            cache.incr(cache_attempt_key, 1)
             raise serializers.ValidationError(
                 {"detail": "Invalid verification code. try again."}
             )
@@ -164,11 +175,12 @@ class SMSVerificationSerializer(serializers.Serializer):
             user = User.objects.get(phone_number=phone_number)
             user.is_verified = True
             user.save(update_fields=["is_verified"])
+            cache.delete(cache_attempt_key)
         except User.DoesNotExist:
             raise serializers.ValidationError(
                 {"detail": "No user found with this phone number"}
             )
-        cache.delete(cache_key)
+        cache.delete(cached_code_str)
         return attrs
 
 
